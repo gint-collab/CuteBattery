@@ -2,11 +2,13 @@ package com.cute.battery
 
 import android.app.Activity
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
@@ -23,6 +25,7 @@ class MainActivity : Activity() {
     private var previewOverride = false
 
     private val styleIds = mapOf(
+        OverlaySettings.STYLE_EYE to R.id.styleEye,
         OverlaySettings.STYLE_CAT to R.id.styleCat,
         OverlaySettings.STYLE_BUNNY to R.id.styleBunny,
         OverlaySettings.STYLE_BEAR to R.id.styleBear,
@@ -61,8 +64,18 @@ class MainActivity : Activity() {
         serviceStatus = findViewById(R.id.serviceStatus)
         preview.settings = s
 
-        findViewById<Button>(R.id.openAccessibility).setOnClickListener {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        findViewById<Button>(R.id.openOverlay).setOnClickListener {
+            startActivity(
+                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+            )
+        }
+
+        // Android 13+: ask to show the small "Cute Battery is on" notification.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1)
         }
 
         // Preview-only controls
@@ -76,7 +89,12 @@ class MainActivity : Activity() {
         }
 
         // Saved settings
-        bindSwitch(R.id.enabled, s.enabled) { update(s.copy(enabled = it)) }
+        bindSwitch(R.id.enabled, s.enabled) {
+            update(s.copy(enabled = it))
+            if (it) OverlayService.start(this) else OverlayService.stop(this)
+            refreshStatus()
+        }
+        bindSwitch(R.id.hideInFullscreen, s.hideInFullscreen) { update(s.copy(hideInFullscreen = it)) }
         bindSwitch(R.id.lightOutline, s.lightOutline) { update(s.copy(lightOutline = it)) }
         bindSwitch(R.id.showPercent, s.showPercent) { update(s.copy(showPercent = it)) }
 
@@ -101,10 +119,16 @@ class MainActivity : Activity() {
         super.onResume()
         registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
             ?.let { batteryReceiver.onReceive(this, it) }
-        serviceStatus.text = if (isServiceOn()) {
-            "✅ Cute Battery is on"
-        } else {
-            "⚪ Cute Battery is off. Turn it on in Accessibility settings:"
+        if (s.enabled) OverlayService.start(this)
+        refreshStatus()
+    }
+
+    private fun refreshStatus() {
+        serviceStatus.text = when {
+            !Settings.canDrawOverlays(this) ->
+                "⚪ Step 1: allow Cute Battery to display over other apps"
+            s.enabled -> "✅ Cute Battery is on"
+            else -> "⚪ Cute Battery is paused. Turn on \"Show cute battery\" below."
         }
     }
 
@@ -125,15 +149,6 @@ class MainActivity : Activity() {
         // Dark fake status bar for white outline, light one for dark outline.
         findViewById<android.view.View>(R.id.previewBar)
             .setBackgroundColor(if (s.lightOutline) 0xFF2B2130.toInt() else 0xFFF2E9EE.toInt())
-    }
-
-    private fun isServiceOn(): Boolean {
-        val enabled = Settings.Secure.getString(
-            contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES,
-        ) ?: return false
-        val me = ComponentName(this, BatteryOverlayService::class.java)
-        val names = setOf(me.flattenToString(), me.flattenToShortString())
-        return enabled.split(':').any { entry -> names.any { it.equals(entry, ignoreCase = true) } }
     }
 
     // ---------- small helpers ----------

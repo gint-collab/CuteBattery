@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Small white notification icon: a cat-eared battery -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M5,4 L9,8 H15 L19,4 L20,10 C21,11 21,12 21,13 V17 C21,19 19,21 17,21 H7 C5,21 3,19 3,17 V13 C3,12 3,11 4,10 Z M8.5,13.5 a1.2,1.2 0 1,0 2.4,0 a1.2,1.2 0 1,0 -2.4,0 Z M13.1,13.5 a1.2,1.2 0 1,0 2.4,0 a1.2,1.2 0 1,0 -2.4,0 Z"
+        android:fillType="evenOdd" />
+</vector>

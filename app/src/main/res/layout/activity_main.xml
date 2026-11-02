@@ -59,16 +59,16 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/openAccessibility"
+            android:id="@+id/openOverlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/pink"
-            android:text="Open Accessibility settings"
+            android:text="Allow display over other apps"
             android:textColor="#FFFFFF" />
 
         <TextView
             style="@style/Hint"
-            android:text="In Accessibility, open Installed apps (or Downloaded apps) → Cute Battery → turn it on. If it is greyed out, go to Settings → Apps → Cute Battery → ⋮ menu → Allow restricted settings, then try again." />
+            android:text="Find Cute Battery in the list and turn on &quot;Allow display over other apps&quot;, then come back here." />
 
         <Switch
             android:id="@+id/enabled"
@@ -84,6 +84,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <RadioButton android:id="@+id/styleEye" style="@style/Choice" android:text="👁 Eye" />
             <RadioButton android:id="@+id/styleCat" style="@style/Choice" android:text="🐱 Cat" />
             <RadioButton android:id="@+id/styleBunny" style="@style/Choice" android:text="🐰 Bunny" />
             <RadioButton android:id="@+id/styleBear" style="@style/Choice" android:text="🐻 Bear" />
@@ -120,7 +121,12 @@
             style="@style/Row"
             android:text="Show percentage" />
 
-        <TextView style="@style/Label" android:text="Background (covers the real battery icon)" />
+        <Switch
+            android:id="@+id/hideInFullscreen"
+            style="@style/Row"
+            android:text="Hide during full-screen videos and games" />
+
+        <TextView style="@style/Label" android:text="Background bubble" />
 
         <RadioGroup
             android:id="@+id/pillGroup"
@@ -158,6 +164,6 @@
         <TextView
             style="@style/Hint"
             android:layout_marginBottom="24dp"
-            android:text="Tip: move the cute battery until it sits right on top of your phone's real battery icon, then pick a Black or White background to hide the real one." />
+            android:text="Tip: Android shows the real status bar icons on top of the cute battery. Slide it just left of the real battery icon, or hide the real one (on Samsung: Good Lock → QuickStar)." />
     </LinearLayout>
 </ScrollView>

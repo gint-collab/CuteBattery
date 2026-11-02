@@ -63,6 +63,9 @@ class CuteBatteryView @JvmOverloads constructor(
     private val blushPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0x99FF8FAB.toInt() }
     private val boltPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFD84D.toInt() }
     private val pillPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val irisPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFE9E1F2.toInt() }
+    private val sparklePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE }
+    private val lidPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFC9D6.toInt() }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         isFakeBoldText = true
         textAlign = Paint.Align.LEFT
@@ -128,6 +131,10 @@ class CuteBatteryView @JvmOverloads constructor(
     }
 
     private fun drawCritter(canvas: Canvas, s: Float, ink: Int) {
+        if (settings.style == OverlaySettings.STYLE_EYE) {
+            drawEye(canvas, s, ink)
+            return
+        }
         val shape = buildShape(settings.style, s)
         shape.computeBounds(tmpRect, true)
         val bounds = RectF(tmpRect)
@@ -151,6 +158,88 @@ class CuteBatteryView @JvmOverloads constructor(
         drawFace(canvas, s, faceY(settings.style))
 
         if (charging) drawBolt(canvas, s)
+    }
+
+    /**
+     * Original anime-style eye: the iris fills up with the battery level,
+     * the pupil turns into a star while charging, and the lid droops when low.
+     */
+    private fun drawEye(canvas: Canvas, s: Float, ink: Int) {
+        val eye = Path().apply {
+            moveTo(0.04f * s, 0.56f * s)
+            quadTo(0.5f * s, 0.06f * s, 0.96f * s, 0.56f * s)
+            quadTo(0.5f * s, 1.0f * s, 0.04f * s, 0.56f * s)
+            close()
+        }
+        val cx = 0.5f * s
+        val cy = 0.55f * s
+        val ir = 0.215f * s
+
+        // white of the eye
+        canvas.drawPath(eye, bgPaint)
+
+        canvas.save()
+        canvas.clipPath(eye)
+
+        // iris, filled from the bottom by the battery level
+        canvas.drawCircle(cx, cy, ir, irisPaint)
+        canvas.save()
+        canvas.clipPath(Path().apply { addCircle(cx, cy, ir, Path.Direction.CW) })
+        levelPaint.color = levelColor()
+        canvas.drawRect(cx - ir, cy + ir - 2f * ir * level / 100f, cx + ir, cy + ir, levelPaint)
+        canvas.restore()
+        faceStroke.strokeWidth = max(1f, s * 0.03f)
+        canvas.drawCircle(cx, cy, ir, faceStroke)
+
+        // pupil
+        if (charging) {
+            val star = starPath(cx, cy, 0.12f * s, 0.045f * s)
+            canvas.drawPath(star, boltPaint)
+            faceStroke.strokeWidth = max(1f, s * 0.025f)
+            canvas.drawPath(star, faceStroke)
+        } else {
+            canvas.drawCircle(cx, cy, 0.085f * s, facePaint)
+        }
+
+        // anime sparkles
+        canvas.drawCircle(cx - 0.08f * s, cy - 0.08f * s, 0.05f * s, sparklePaint)
+        canvas.drawCircle(cx + 0.075f * s, cy + 0.08f * s, 0.025f * s, sparklePaint)
+
+        // sleepy lid when the battery is low
+        if (!charging && level <= 15) {
+            canvas.drawRect(0f, 0f, s, 0.52f * s, lidPaint)
+            faceStroke.strokeWidth = max(1f, s * 0.05f)
+            canvas.drawLine(0f, 0.52f * s, s, 0.52f * s, faceStroke)
+        }
+        canvas.restore()
+
+        // outline, with a bolder upper lid and lashes
+        outlinePaint.color = ink
+        outlinePaint.strokeWidth = max(1.5f, s * 0.06f)
+        canvas.drawPath(eye, outlinePaint)
+        val upperLid = Path().apply {
+            moveTo(0.04f * s, 0.56f * s)
+            quadTo(0.5f * s, 0.06f * s, 0.96f * s, 0.56f * s)
+        }
+        outlinePaint.strokeWidth = max(2f, s * 0.1f)
+        canvas.drawPath(upperLid, outlinePaint)
+        outlinePaint.strokeWidth = max(1.5f, s * 0.06f)
+        canvas.drawLine(0.73f * s, 0.37f * s, 0.78f * s, 0.24f * s, outlinePaint)
+        canvas.drawLine(0.85f * s, 0.45f * s, 0.93f * s, 0.35f * s, outlinePaint)
+        canvas.drawLine(0.93f * s, 0.53f * s, 0.99f * s, 0.47f * s, outlinePaint)
+    }
+
+    private fun starPath(cx: Float, cy: Float, outer: Float, inner: Float): Path {
+        val p = Path()
+        for (i in 0 until 8) {
+            val r = if (i % 2 == 0) outer else inner
+            val a = Math.PI / 4 * i - Math.PI / 2
+            val x = cx + (r * Math.cos(a)).toFloat()
+            val y = cy + (r * Math.sin(a)).toFloat()
+            if (i == 0) p.moveTo(x, y) else p.lineTo(x, y)
+        }
+        p.close()
+        return p
     }
 
     private fun levelColor(): Int {

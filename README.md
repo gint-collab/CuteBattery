@@ -1,11 +1,16 @@
 # Cute Battery 🐱🔋
 
-A small Android app that puts a cute battery on top of your status bar. You can choose a cat, bunny, bear or heart, and it fills up as your battery charges.
+A small Android app that puts a cute battery at the top of your screen. You can choose an anime-style eye, a cat, bunny, bear or heart, and it fills up as your battery charges.
 
-- Dot eyes normally, `^ ^` happy eyes while charging, sleepy eyes below 15%
+**Version 2 doesn't need Accessibility.** It uses "Display over other apps" instead, so Google Play Protect doesn't block the install.
+
+- **Eye:** the iris fills with the battery level, the pupil turns into a ✦ star while charging, and the lid droops below 15%
+- **Animals:** dot eyes normally, `^ ^` happy eyes while charging, sleepy eyes below 15%
 - Fill colors: Auto (green, then yellow, then red), Pink, Lilac or Mint
 - Optional percentage text
-- Black or white background pill to cover the real battery icon
+- Optional black or white background bubble
+- Optional hiding during full-screen videos and games
+- Turns itself back on after a restart
 - Size and position sliders, with a live preview
 - No root needed. Works on Android 8.0 and newer.
 
@@ -24,15 +29,13 @@ A small Android app that puts a cute battery on top of your status bar. You can 
 
 ## Install and turn it on
 1. Open `app-debug.apk` on your phone and allow installing from this source.
-2. Open **Cute Battery** and tap **Open Accessibility settings**.
-3. Go to **Installed apps** (Samsung calls it *Installed apps*, some phones call it *Downloaded apps*), then **Cute Battery**, and turn it **On**.
-   - If the switch is greyed out (Android 13 and newer): go to **Settings → Apps → Cute Battery → ⋮ (top-right) → Allow restricted settings**, then try again.
-4. Back in the app, use the sliders to move the cute battery over your real battery icon.
+2. Open **Cute Battery** and allow notifications. The notification is a quiet "Cute Battery is on" message that keeps it running.
+3. Tap **Allow display over other apps**, find Cute Battery, and turn it on.
+4. Go back to the app. The cute battery appears at the top of the screen.
+5. Use the sliders to place it. Android always draws the real status bar icons **on top of** overlay apps, so put it just left of the real battery icon, or hide the real one (see below).
 
-## Hiding the real battery icon
-The app draws *on top of* the status bar. It can't remove the real icon, so pick one of these:
-- **Easiest:** in the app, choose a **Black** or **White** background so the pill covers the real icon.
-- **Samsung:** install **Good Lock → QuickStar** and hide the battery icon there.
+## Hiding the real battery icon (optional)
+- **Samsung:** use **Good Lock → QuickStar** to hide the battery icon.
 - **Pixel and most other phones (needs a computer once):** turn on USB debugging, then run:
   ```
   adb shell settings put secure icon_blacklist battery
@@ -40,17 +43,17 @@ The app draws *on top of* the status bar. It can't remove the real icon, so pick
   To bring the real icon back, run `adb shell settings delete secure icon_blacklist`.
 
 ## Things to know
-- The icon may hide when you pull down the notification shade, on the lock screen, or in full-screen videos and games. All overlay apps behave this way.
+- The cute battery sits *under* the status bar and notification shade, and may not show on the lock screen. That's how Android handles overlay apps.
+- Turn on **Hide during full-screen videos and games** if it gets in the way. That option needs Android 11 or newer.
 - If your phone kills background apps aggressively (Xiaomi, Oppo, Vivo, Huawei), set Cute Battery's battery usage to **Unrestricted** or **No restrictions**.
-- **Privacy:** the app only *draws* the icon. It does not read your screen (`canRetrieveWindowContent="false"`) and has no internet permission.
-- **Publishing:** this is fine to install on your own phone. Google Play restricts apps that use Accessibility for things that aren't accessibility features, so publishing there would need a policy declaration and may be rejected.
+- **Privacy:** the app only *draws* the icon. It can't read your screen and has no internet permission.
 
 ## Where to change things
 | What | File |
 |---|---|
-| Shapes, face and colors | `app/src/main/java/com/cute/battery/CuteBatteryView.kt` (`buildShape`, `drawFace`, `levelColor`) |
+| Shapes, face and colors | `app/src/main/java/com/cute/battery/CuteBatteryView.kt` (`drawEye`, `buildShape`, `drawFace`, `levelColor`) |
 | Default size and position | `OverlaySettings.kt` |
-| Overlay placement | `BatteryOverlayService.kt` (`buildParams`) |
+| Overlay placement | `OverlayService.kt` (`buildParams`) |
 | Settings screen | `res/layout/activity_main.xml` and `MainActivity.kt` |
 | App icon | `res/drawable/ic_launcher_foreground.xml` |
 
