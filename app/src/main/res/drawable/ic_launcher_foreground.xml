@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cat-shaped battery, about 60% full -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- head + ears background -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M33,52 L37,29 L52,42 Z M75,52 L71,29 L56,42 Z M30,62 a24,22 0 1,0 48,0 a24,22 0 1,0 -48,0 Z" />
+
+    <!-- battery level fill (bottom part only) -->
+    <group>
+        <clip-path android:pathData="M0,64 H108 V108 H0 Z" />
+        <path
+            android:fillColor="#7BE495"
+            android:pathData="M30,62 a24,22 0 1,0 48,0 a24,22 0 1,0 -48,0 Z" />
+    </group>
+
+    <!-- outline -->
+    <path
+        android:strokeColor="#3D2C3A"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round"
+        android:pathData="M33,52 L37,29 L52,42 M75,52 L71,29 L56,42 M30,62 a24,22 0 1,0 48,0 a24,22 0 1,0 -48,0 Z" />
+
+    <!-- blush -->
+    <path
+        android:fillColor="#99FF8FAB"
+        android:pathData="M36.5,68 a3.5,2 0 1,0 7,0 a3.5,2 0 1,0 -7,0 Z M64.5,68 a3.5,2 0 1,0 7,0 a3.5,2 0 1,0 -7,0 Z" />
+
+    <!-- eyes -->
+    <path
+        android:fillColor="#3D2C3A"
+        android:pathData="M42,61 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 Z M60,61 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 Z" />
+
+    <!-- w mouth -->
+    <path
+        android:strokeColor="#3D2C3A"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M49,68 q2.5,3 5,0 q2.5,3 5,0" />
+</vector>

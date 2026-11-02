@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cute Battery</string>
+    <string name="accessibility_description">Shows a cute battery icon on top of your status bar. Cute Battery does not read your screen or anything you type; this permission is only used to draw the icon.</string>
+</resources>

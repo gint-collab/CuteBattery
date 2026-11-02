@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/card"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cute Battery"
+            android:textColor="@color/ink"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <!-- Preview on a fake status bar -->
+        <FrameLayout
+            android:id="@+id/previewBar"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_marginTop="16dp"
+            android:background="#2B2130"
+            android:padding="16dp">
+
+            <com.cute.battery.CuteBatteryView
+                android:id="@+id/preview"
+                android:layout_width="wrap_content"
+                android:layout_height="64dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/previewLevelLabel"
+            style="@style/Label"
+            android:text="Try a battery level (preview only)" />
+
+        <SeekBar
+            android:id="@+id/previewLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100" />
+
+        <Switch
+            android:id="@+id/previewCharging"
+            style="@style/Row"
+            android:text="Preview charging" />
+
+        <!-- Turn on -->
+        <TextView
+            android:id="@+id/serviceStatus"
+            style="@style/Label"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/openAccessibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/pink"
+            android:text="Open Accessibility settings"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            style="@style/Hint"
+            android:text="In Accessibility, open Installed apps (or Downloaded apps) → Cute Battery → turn it on. If it is greyed out, go to Settings → Apps → Cute Battery → ⋮ menu → Allow restricted settings, then try again." />
+
+        <Switch
+            android:id="@+id/enabled"
+            style="@style/Row"
+            android:text="Show cute battery" />
+
+        <!-- Style -->
+        <TextView style="@style/Label" android:text="Character" />
+
+        <RadioGroup
+            android:id="@+id/styleGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton android:id="@+id/styleCat" style="@style/Choice" android:text="🐱 Cat" />
+            <RadioButton android:id="@+id/styleBunny" style="@style/Choice" android:text="🐰 Bunny" />
+            <RadioButton android:id="@+id/styleBear" style="@style/Choice" android:text="🐻 Bear" />
+            <RadioButton android:id="@+id/styleHeart" style="@style/Choice" android:text="💗 Heart" />
+        </RadioGroup>
+
+        <!-- Color -->
+        <TextView style="@style/Label" android:text="Fill color" />
+
+        <RadioGroup
+            android:id="@+id/colorGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton android:id="@+id/colorAuto" style="@style/Choice" android:text="Auto" />
+            <RadioButton android:id="@+id/colorPink" style="@style/Choice" android:text="Pink" />
+            <RadioButton android:id="@+id/colorLavender" style="@style/Choice" android:text="Lilac" />
+            <RadioButton android:id="@+id/colorMint" style="@style/Choice" android:text="Mint" />
+        </RadioGroup>
+
+        <TextView
+            style="@style/Hint"
+            android:text="Auto = green, then yellow below 30%. Every color turns red below 15%." />
+
+        <!-- Look -->
+        <Switch
+            android:id="@+id/lightOutline"
+            style="@style/Row"
+            android:text="White outline (for dark status bars)" />
+
+        <Switch
+            android:id="@+id/showPercent"
+            style="@style/Row"
+            android:text="Show percentage" />
+
+        <TextView style="@style/Label" android:text="Background (covers the real battery icon)" />
+
+        <RadioGroup
+            android:id="@+id/pillGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton android:id="@+id/pillNone" style="@style/Choice" android:text="None" />
+            <RadioButton android:id="@+id/pillBlack" style="@style/Choice" android:text="Black" />
+            <RadioButton android:id="@+id/pillWhite" style="@style/Choice" android:text="White" />
+        </RadioGroup>
+
+        <!-- Size and position -->
+        <TextView android:id="@+id/sizeLabel" style="@style/Label" />
+        <SeekBar
+            android:id="@+id/size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="34" />
+
+        <TextView android:id="@+id/offsetXLabel" style="@style/Label" />
+        <SeekBar
+            android:id="@+id/offsetX"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="300" />
+
+        <TextView android:id="@+id/offsetYLabel" style="@style/Label" />
+        <SeekBar
+            android:id="@+id/offsetY"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="80" />
+
+        <TextView
+            style="@style/Hint"
+            android:layout_marginBottom="24dp"
+            android:text="Tip: move the cute battery until it sits right on top of your phone's real battery icon, then pick a Black or White background to hide the real one." />
+    </LinearLayout>
+</ScrollView>
